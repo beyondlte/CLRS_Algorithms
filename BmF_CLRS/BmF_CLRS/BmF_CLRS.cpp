@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include <iostream>
 #include <vector>
+#include <assert.h>
 
 typedef struct _Edge{
 	char src, dest;
@@ -23,6 +24,7 @@ public:
 	void showEdge();
 	void BellmanFordShortestPath();
 	int mapVertexToIndex(T s);
+	void showKey();
 };
 
 template <class T> Graph<T>::Graph(int v, int e)
@@ -33,6 +35,7 @@ template <class T> Graph<T>::Graph(int v, int e)
 	key = new int[this->V];
 	for (int v = 0; v < this->V; ++v)
 		key[v] = 100000;
+	key[0] = 0;
 	// V vectors, each vector is for one vertex
 	edge = new std::vector<Edge>[V];
 }
@@ -71,21 +74,32 @@ template <class T> void Graph<T>::BellmanFordShortestPath()
 {
 	std::vector<Edge>::iterator it;
 
-	/*
-	for (int v; v < V; ++v)
+	for (int s = 0; s < V; ++s)
 	{
-		for (it = edge[v].begin(); it != edge[v].end(); ++it)
+		// need to check all edges, so check all edge vectors
+		for (int r = 0; r < V; ++r)
 		{
-			if (key[v] > key[u] + (*it).weight)
+			for (it = edge[r].begin(); it != edge[r].end(); ++it)
 			{
-				key[v] = key[u] + (*it).weight);
-				parent[v] = u;
+				int v = mapVertexToIndex((*it).dest);
+				int u = mapVertexToIndex((*it).src);
+				assert(u == r);
+				if (key[v] > key[u] + (*it).weight)
+				{
+					key[v] = key[u] + (*it).weight;
+					parent[v] = u;
+				}
 			}
 		}
 	}
-	*/
 }
 
+template <class T> void Graph<T>::showKey()
+{
+	for (int v = 0; v < V; ++v)
+		std::cout << key[v] << " ";
+	std::cout << "\n";
+}
 template <class T> int Graph<T>::mapVertexToIndex(T src)
 {
 	int v;
@@ -109,13 +123,16 @@ int _tmain(int argc, _TCHAR* argv[])
 	g.addEdge('s', 'y', 7);
 	g.addEdge('t', 'x', 5);
 	g.addEdge('t', 'y', 8);
-	g.addEdge('t', 'z', 2);
+	g.addEdge('t', 'z', -4);
 	g.addEdge('x', 't', -2);
 	g.addEdge('y', 'x', -3);
 	g.addEdge('y', 'z', 9);
 	g.addEdge('z', 's', 2);
 	g.addEdge('z', 'x', 7);
 	g.showEdge();
+	g.BellmanFordShortestPath();
+	g.showKey();
 	return 0;
 }
+
 
