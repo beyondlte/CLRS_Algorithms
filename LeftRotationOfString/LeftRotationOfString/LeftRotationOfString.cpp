@@ -28,6 +28,7 @@ void leftRotateString(char *str, int m, int n)
 {
 	int i = 1;
 	while (i <= m)
+	// can be simplified to while(m--)
 	{
 		leftMoveOneChar(str, n);
 		i++;
