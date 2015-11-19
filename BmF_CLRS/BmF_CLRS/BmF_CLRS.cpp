@@ -90,6 +90,7 @@ template <class T> void Graph<T>::BellmanFordShortestPath()
 					parent[v] = u;
 				}
 			}
+			showKey();
 		}
 	}
 }
