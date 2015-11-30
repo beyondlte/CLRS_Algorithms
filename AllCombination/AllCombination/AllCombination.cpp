@@ -47,7 +47,7 @@ void Permu(char *s, int h, int t)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	char str[]="abc";
+	char str[]="abcd";
 	int n = strlen(str);
 	Permu(str, 0, n-1);
 	return 0;
