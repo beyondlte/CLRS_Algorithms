@@ -9,8 +9,22 @@ using namespace std;
 char * reverseArray(char *s, int m, int n);
 #define SWAP(T, a, b) do { T tmp = a; a = b; b = tmp; } while (0)
 
+// ------------ functions
+// permutation without repeatition
+void Permu(char *s, int h, int t);
+// next_permutation using lexicographic ordering
+char * NextPermutation(char *s);
+// permutation with/without repeatition
+void allPerm(char* result, char *str, int size, int resPos, int repeat);
+
+// all possible combinations of r elements in a given array of size n
+void combinationUtil(char arr[], char data[], int start, int end, int index, int r);
+void printCombination(char arr[], int n, int r);
+
+// --------- global variables
 stack<int> ST;
 int m = 1;
+
 // permutation without repeatition
 void Permu(char *s, int h, int t)
 {
@@ -50,6 +64,7 @@ void Permu(char *s, int h, int t)
 
 }
 
+// next_permutation using lexicographic ordering
 //       x y  
 // 4 1 3 2 5 ->
 // 4 1 3 5 2
@@ -130,7 +145,7 @@ char * reverseArray(char *s, int m, int n)
 }
 
 // permutatin with repeatition
-void allPerm(char* result, char *str, int size, int resPos)
+void allPerm(char* result, char *str, int size, int resPos, int repeat)
 {
 	// basic idea is when resPos doesn't reach size, it will assign value to result[resPos] and recursively call allPerm(resPos+1)
 	// when it reaches size, it will not call allPerm(resPos+1), it will call the block (resPos==size) instead to print it out
@@ -150,8 +165,10 @@ void allPerm(char* result, char *str, int size, int resPos)
 
 	if (resPos == size)
 	{
+		printf("%d: ", m);
 		for (int i = 0; i < size; ++i)
 			printf("%c", result[i]);
+		m++;
 		printf("\n");
 	}
 	else
@@ -159,26 +176,100 @@ void allPerm(char* result, char *str, int size, int resPos)
 		for (int i = 0; i < size; ++i)
 		{
 			// adding this line can get all permutations without repeatition
-			// the idea is check if the new allocation is the repeatition of the previous one
-			if (resPos >= 1 && (str[i] != result[resPos - 1]))
+			// the idea is check if the new allocation is the repeatition of all previous 
+			if (repeat == 0)
+			{
+				// now only works for size = 3
+				// if size = 4, we need one more condition, !=result[resPos-3]
+				if (resPos >= 0 && (str[i] != result[resPos - 1]) && (str[i] != result[resPos - 2]))
+				{
+					result[resPos] = str[i];
+					printf("result[%d] = %c\n", resPos, result[resPos]);
+					allPerm(result, str, size, resPos + 1, repeat);
+				}
+			}
+			else
 			{
 				result[resPos] = str[i];
 				printf("result[%d] = %c\n", resPos, result[resPos]);
-				allPerm(result, str, size, resPos + 1);
+				allPerm(result, str, size, resPos + 1, repeat);
 			}
 		}
 	}
 }
 
+
+// The main function that prints all combinations of size r
+// in arr[] of size n. This function mainly uses combinationUtil()
+void printCombination(char arr[], int n, int r)
+{
+	// A temporary array to store all combination one by one
+	char *data = (char *)malloc(sizeof(char)*r);
+
+	// Print all combination using temprary array 'data[]'
+	combinationUtil(arr, data, 0, n - 1, 0, r);
+}
+
+/* arr[]  ---> Input Array
+data[] ---> Temporary array to store current combination
+start & end ---> Staring and Ending indexes in arr[]
+index  ---> Current index in data[]
+r ---> Size of a combination to be printed */
+void combinationUtil(char arr[], char data[], int start, int end, int index, int r)
+{
+	// Current combination is ready to be printed, print it
+	if (index == r)
+	{
+		for (int j = 0; j<r; j++)
+			printf("%c", data[j]);
+		printf("\n");
+		return;
+	}
+
+	// replace index with all possible elements. The condition
+	// "end-i+1 >= r-index" makes sure that including one element
+	// at index will make a combination with remaining elements
+	// at remaining positions
+
+	// More clear explanation:
+	// Its pretty confusing..Instead of i <= end && end - i + 1 >= r - index you could understand that 
+	// as i <= end - (r - index) + 1 which means the following :
+	// Lets take[1, 2, 3, 4, 5] and r = 3. While picking up the first element(index = 0) we dont need to 
+	// go through 4 and 5. lets suppose we considered the 1st element as 1. 
+	// Then, we dont want to pick the 2nd element as 5 at any case ([1, 5, ? ] not possible).
+	// So the picking up a digit is really depending on end, r and index.We are excluding 
+	// last r - index elements at the end.So it becomes i <= end - (r - index) + 1.
+	// for example: 123456
+	// when index = 1, we have x,?,?, x can be 1, 2, 3, 4, and ? will not be 5 and 6 ,i.e. 6-(3-1)+1 = 6-2+1 = 5 and above
+	// when index = 2, we have x,y,?, y can be 2, 3, 4, 5, won't be 1 again, and ? will not be 6 ,i.e. 6-(3-2)+1 = 6-1+1 = 6 and above
+	// this is similar to the allPerm, but start is differnt, in allPerm, start pos is always 0, but here it's varying as i+1
+	for (int i = start; i <= end && i <= end - (r - index) + 1; i++)
+	{
+		data[index] = arr[i];
+		combinationUtil(arr, data, i + 1, end, index + 1, r);
+	}
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
-	char str[] = "abcd"; // "abcd";
+	char str[] = "abc"; // "abcd";
 	unsigned int n = strlen(str);
 
-	char *result = (char *)malloc(sizeof(char)*n);
-	allPerm(result, str, n, 0);
-
+	// permunation without repeatition: n!
 	// Permu(str, 0, n-1);
+
+	// permunation with/without repeatition
+	// with repeatition: n^n
+	// without repeatition: n!
+	char *result = (char *)malloc(sizeof(char)*n);
+	int repeat;
+	allPerm(result, str, n, 0, repeat=0);
+
+	// all combinations of r elements: C(n, r)
+	// printCombination(str, n, 3);
+
+	// next_permutation using lexicographic ordering
+	/*
 	// first get the target string, i.e. the reverse of str
 	// need to allocate a new pointer and copy the reverse of str to it
 	char *target = (char *)malloc(sizeof(char)*n);
@@ -196,6 +287,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		++i;
 	}
 	printf("str %d = %s\n", i, str);
+	// end of calling NextPermutation
+	*/
 
 	return 0;
 }
