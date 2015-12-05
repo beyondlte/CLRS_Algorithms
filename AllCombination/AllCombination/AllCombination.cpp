@@ -261,12 +261,16 @@ int _tmain(int argc, _TCHAR* argv[])
 	// permunation with/without repeatition
 	// with repeatition: n^n
 	// without repeatition: n!
+	/*
 	char *result = (char *)malloc(sizeof(char)*n);
 	int repeat;
 	allPerm(result, str, n, 0, repeat=0);
+	*/
 
 	// all combinations of r elements: C(n, r)
-	// printCombination(str, n, 3);
+	printCombination(str, n, 1);
+	printCombination(str, n, 2);
+	printCombination(str, n, 3);
 
 	// next_permutation using lexicographic ordering
 	/*
