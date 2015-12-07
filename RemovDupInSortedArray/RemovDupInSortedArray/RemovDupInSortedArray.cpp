@@ -1,4 +1,4 @@
-// LeetCode_C001.cpp : Defines the entry point for the console application.
+// RemovDupInSortedArray.cpp : Defines the entry point for the console application.
 //
 
 #include "stdafx.h"
@@ -30,12 +30,12 @@ int removeDuplicatesInArray(int *s, int n)
 {
 	int i, j;
 	i = 0;
-	j = 1; 
+	j = 1;
 
-	while(j<n)
+	while (j<n)
 	{
 		printf("before: i = %d, j = %d\n", i, j);
-		if(s[j] != s[i])
+		if (s[j] != s[i])
 		{
 			// increase i first, then assign
 			s[++i] = s[j];
@@ -69,9 +69,9 @@ int removeDuplicatesInArray2(int *s, int n)
 	j = 0;
 	while (j < n)
 	{
-		if (s[j] != s[i - 2] || i < 2) 
-		// more generic, add one more condition i<2 here, it's like in removeDuplicatesInArray3 using else if{i<2} 
-		// see removeDuplicatesInArray2Mine 
+		if (s[j] != s[i - 2] || i < 2)
+			// more generic, add one more condition i<2 here, it's like in removeDuplicatesInArray3 using else if{i<2} 
+			// see removeDuplicatesInArray2Mine 
 		{
 			// simplified version is s[i++] = s[j];
 			// but this is more clear
@@ -107,7 +107,7 @@ int removeDuplicatesInArray3(int *s, int n)
 	j = 0;
 	while (j < n)
 	{
-		if (s[j] != s[i - 3] || s[j] != s[i-2])
+		if (s[j] != s[i - 3] || s[j] != s[i - 2])
 		{
 			// simplified version is s[i++] = s[j];
 			// but this is more clear
@@ -136,7 +136,7 @@ int removeDuplicatesInArrayGeneric(int *s, int n, int dupNo)
 	j = dupNo;
 	while (j < n)
 	{
-		if (s[j] != s[i-dupNo] || s[j] != s[i - 3] || s[j] != s[i - 2])
+		if (s[j] != s[i - dupNo] || s[j] != s[i - 3] || s[j] != s[i - 2])
 		{
 			// simplified version is s[i++] = s[j];
 			// but this is more clear
@@ -202,7 +202,7 @@ int removeDuplicatesInArray2Mine(int *s, int n)
 	j = 0;
 	while (j < n)
 	{
-		if (i>=2 && s[j] == s[i - 2])
+		if (i >= 2 && s[j] == s[i - 2])
 		{
 			++j;
 		}
@@ -220,8 +220,8 @@ int removeDuplicatesInArray2Mine(int *s, int n)
 int _tmain(int argc, _TCHAR* argv[])
 {
 
-	int array[]={1,1,1,2,2,2,2,2,3,3,3,3,4,4,5};
-	int n = sizeof(array)/sizeof(array[0]);
+	int array[] = { 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5 };
+	int n = sizeof(array) / sizeof(array[0]);
 	// removeDuplicatesInArray(array, n);
 	int endPos = removeDuplicatesInArray3(array, n);
 	for (int i = 0; i<endPos; ++i)
