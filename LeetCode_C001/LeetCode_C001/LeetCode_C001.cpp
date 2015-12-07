@@ -26,7 +26,7 @@ using namespace std;
 // 1 2 3 4 3 4 5
 
 // i starts from 0, j starts from 1
-void removeDuplicatesInArray(int *s, int n)
+int removeDuplicatesInArray(int *s, int n)
 {
 	int i, j;
 	i = 0;
@@ -43,6 +43,7 @@ void removeDuplicatesInArray(int *s, int n)
 		++j;
 		printf("after: i = %d, j = %d\n", i, j);
 	}
+	return i;
 }
 
 
@@ -61,14 +62,16 @@ void removeDuplicatesInArray(int *s, int n)
 //     i
 //     j
 // 1 1 2
-void removeDuplicatesInArray2(int *s, int n)
+int removeDuplicatesInArray2(int *s, int n)
 {
 	int i, j;
-	i = 2;
-	j = 2;
+	i = 0;
+	j = 0;
 	while (j < n)
 	{
-		if (s[j] != s[i - 2])
+		if (s[j] != s[i - 2] || i < 2) 
+		// more generic, add one more condition i<2 here, it's like in removeDuplicatesInArray3 using else if{i<2} 
+		// see removeDuplicatesInArray2Mine 
 		{
 			// simplified version is s[i++] = s[j];
 			// but this is more clear
@@ -81,7 +84,7 @@ void removeDuplicatesInArray2(int *s, int n)
 		else
 			++j;
 	}
-	s[i] = '\0';
+	return i;
 }
 
 // duplicates are allowed at most triple times 
@@ -97,7 +100,7 @@ void removeDuplicatesInArray2(int *s, int n)
 // 1 2 3 3
 // 1 3 3 3 same as 1 2 2 2 
 // 1 2 3 4 same as 1 2 2 2 
-void removeDuplicatesInArray3(int *s, int n)
+int removeDuplicatesInArray3(int *s, int n)
 {
 	int i, j;
 	i = 0;
@@ -121,12 +124,12 @@ void removeDuplicatesInArray3(int *s, int n)
 		else
 			++j;
 	}
-	s[i] = '\0';
+	return i;
 }
 
 // this generic version is just for illustration
 // becasue we need to list all from s[i-dupNo], s[i-(dupNo-1)], ..., to s[i-2]
-void removeDuplicatesInArrayGeneric(int *s, int n, int dupNo)
+int removeDuplicatesInArrayGeneric(int *s, int n, int dupNo)
 {
 	int i, j;
 	i = dupNo;
@@ -146,17 +149,17 @@ void removeDuplicatesInArrayGeneric(int *s, int n, int dupNo)
 		else
 			++j;
 	}
-	s[i] = '\0';
+	return i;
 }
 // so if duplicate is allowed only once, the generic version is
-void removeDuplicatesInArray1(int *s, int n)
+int removeDuplicatesInArray1(int *s, int n)
 {
 	int i, j;
-	i = 1;
-	j = 1;
+	i = 0;
+	j = 0;
 	while (j < n)
 	{
-		if (s[j] != s[i - 1])
+		if (s[j] != s[i - 1] || i < 1)
 		{
 			// simplified version is s[i++] = s[j];
 			// but this is more clear
@@ -169,7 +172,49 @@ void removeDuplicatesInArray1(int *s, int n)
 		else
 			++j;
 	}
-	s[i] = '\0';
+	return i;
+}
+
+// the version in the ebook 
+int removeDuplicatesInArray2Book(int *s, int n)
+{
+	int i, j;
+	i = 0;
+	j = 0;
+	while (j<n)
+	{
+		if (j>0 && j < n - 1 && s[j] == s[j - 1] && s[j] == s[j + 1])
+			j++;
+		else
+		{
+			s[i++] = s[j];
+			j++;
+		}
+	}
+	return i;
+}
+
+// The similar algorithm to removeDuplicatesInArray2Book
+int removeDuplicatesInArray2Mine(int *s, int n)
+{
+	int i, j;
+	i = 0;
+	j = 0;
+	while (j < n)
+	{
+		if (i>=2 && s[j] == s[i - 2])
+		{
+			++j;
+		}
+		else
+		{
+			if (i != j)
+				s[i] = s[j];
+			i++;
+			++j;
+		}
+	}
+	return i;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -178,8 +223,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	int array[]={1,1,1,2,2,2,2,2,3,3,3,3,4,4,5};
 	int n = sizeof(array)/sizeof(array[0]);
 	// removeDuplicatesInArray(array, n);
-	removeDuplicatesInArray3(array, n);
-	for (int i = 0; i<n; ++i)
+	int endPos = removeDuplicatesInArray3(array, n);
+	for (int i = 0; i<endPos; ++i)
 		printf("%d ", array[i]);
 
 	return 0;
