@@ -4,6 +4,8 @@
 #include "stdafx.h"
 #include <stdlib.h>
 
+#define min(a,b) (a)<(b)?(a):(b)
+
 // O(M+N)
 int FindKthInSortedArrayMerge(int *ar1, int m, int *ar2, int n, int k)
 {
@@ -105,15 +107,42 @@ int FindKthInSortedArrayMerge(int *ar1, int m, int *ar2, int n, int k)
 	return ar3[k-1];
 	*/
 }
+
+// recursive version
+// this doesn't support duplicates
+int FindKthInSortedArrayBinary(int *a1, int m, int *a2, int n, int k)
+{
+	if (m > n)
+		return FindKthInSortedArrayBinary(a2, n, a1, m, k);
+	if (m == 0)
+		return a2[k - 1];
+	if (k == 1)
+		return min(a1[0], a2[0]);
+
+	int ia = min(k / 2, m);
+	int ib = k - ia;
+
+	if (a1[ia - 1] < a2[ib - 1])
+		return FindKthInSortedArrayBinary(a1 + ia, m - ia, a2, n, k - ia);
+	else if (a1[ia - 1] > a2[ib - 1])
+		return FindKthInSortedArrayBinary(a1, m, a2 + ib, n - ib, k - ib);
+	else
+		return a1[ia - 1];
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
-	int ar1[] = { 1, 2, 3, 4, 5 };
-	int ar2[] = { 3, 3, 3, 6, 9 };
+	int ar1[] = { 1, 2, 3, 5, 9 };
+	int ar2[] = { 5, 6, 7, 8, 10 };
 	int len1, len2;
 	len1 = sizeof(ar1) / sizeof(ar1[0]);
 	len2 = sizeof(ar2) / sizeof(ar2[0]);
-	int ret = FindKthInSortedArrayMerge(ar1, len1, ar2, len2, 6);
-	printf("ret = %d\n", ret);
+	// int ret = FindKthInSortedArrayMerge(ar1, len1, ar2, len2, 6);
+	for (int i = 1; i <= 10; ++i)
+	{
+		int ret = FindKthInSortedArrayBinary(ar1, len1, ar2, len2, i);
+		printf("check %d, ret = %d\n", i, ret);
+	}
 	return 0;
 }
 
