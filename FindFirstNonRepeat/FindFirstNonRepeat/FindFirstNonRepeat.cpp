@@ -154,6 +154,11 @@ struct countIndex * getCountIndexArray(char *s)
 			countList[s[i]].index = i;
 		++i;
 	}
+	for (i = 90; i < 256; ++i)
+	{
+		if (countList[i].count != 0)
+			printf("char %c = %d, %d\n", i, countList[i].count, countList[i].index);
+	}
 	return countList;
 }
 
@@ -164,7 +169,10 @@ int findFirstNonRepeating(char *s)
 	for (int i = 0; i < 256; ++i)
 	{
 		if (countList[i].count == 1 && countList[i].index < result)
+		{
 			result = countList[i].index;
+			printf("result = %d\n", result);
+		}
 	}
 	free(countList);
 	return result;
