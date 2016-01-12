@@ -29,6 +29,10 @@ int main(){
 			x[i] = 0; //初始化打印方案
 
 		for (int i = 0; i <= n; ++i){
+			// don't use V[i] and W[i], but use V and W instead
+			// dont' read in V&W at the same time when we do the DP, read them one sequence later
+			// do d[i][j] update first, then read V&W
+			// previously, read V[i]&W[i], then update d[i][j] using V[i-1] and W[i-1]
 			if (i>0)
 				scanf("%d %d", &V, &W);
 			for (int j = 0; j <= C; ++j){
