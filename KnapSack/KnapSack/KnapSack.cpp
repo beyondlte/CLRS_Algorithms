@@ -1,9 +1,10 @@
 // KnapSack.cpp : Defines the entry point for the console application.
-//
+// http://www.hawstein.com/posts/dp-knapsack.html
 
 #include "stdafx.h"
 
 // 0-1 knapsack d(i, j)表示前i个物品装到剩余容量为j的背包中的最大重量
+/*
 #include<cstdio>
 using namespace std;
 #define MAXN 1000
@@ -20,10 +21,10 @@ int main(){
 	freopen("data.out", "w", stdout);//重定向输出流
 	int n, C, V=0, W=0;
 	while (scanf("%d %d", &n, &C) != EOF){
-		/*
-		for (int i = 0; i<n; ++i)   
-			scanf("%d %d", &V[i], &W[i]);
-		*/
+		
+		// for (int i = 0; i<n; ++i)   
+		// 	scanf("%d %d", &V[i], &W[i]);
+		//	
 
 		for (int i = 0; i<n; ++i)   
 			x[i] = 0; //初始化打印方案
@@ -70,8 +71,8 @@ int main(){
 	fclose(stdout);
 	return 0;
 }
+*/
 
-/*
 #include<cstdio>
 #include<cstdlib>
 #include<cstring>
@@ -90,10 +91,31 @@ int main(){
 		for (int i = 0; i <= n; ++i){
 			if (i>0)   
 				scanf("%d %d", &V, &W);
+			// 由上面那一小段优化过后的代码可知，状态转移方程为：d(i, j)=max{ d(i-1, j), d(i-1, j-V)+W }，
+			// 也就是在计算d(i, j)时我们用到了d(i-1,j)和d(i-1, j-V)的值。 如果我们只用一个一维数组d(0)～d(C)来保存状态值可以么？
+			// 将i方向的维数去掉， 我们可以将原来二维数组表示为一维数据：d(i-1, j-V)变为d(j-V)， d(i-1, j)变为d(j)。
+			// 当我们要计算d(i, j)时，只需要比较d(j)和d(j-V)+W的大小， 用较大的数更新d(j)即可。
+			// 等等，如果我们按j递增的顺序来计算下一个d(i, j+1)，而它恰好要用到d(i-1, j)的值， 那么问题就出来了，因为你刚刚才把它更新为d(i, j)了。
+			// because d(i, j+1)=max{ d(i-1, j+1), d(i-1, j+1-V)+W } 
+			// d(i-1, j) d(i-1, j+1)
+			// d(i,   j) d(i, j+1)
+			// where d(i-1, j+1) needs d(i-1,j), but d(i-1,j) has been changed to d(i,j)
+			// 那么，怎么办呢？ 按照j递减的顺序即可避免这种问题。比如，你计算完d(i, j)， 接下来要计算的是d(i,j-1)，
+			// 而它的状态转移方程为d(i, j-1)=max{ d(i-1, j-1), d(i-1, j-1-V)+W }，它不会再用到d(i-1,j)的值！所以， 即使该位置的值被更新了也无所谓。
+			// d(i-1,j-1)  d(i-1, j)
+			// d(i,  j-1)  d(i,   j)
+			// so here we cal d[j] in --j sequence
+			for (int j = 0; j <= C; ++j)
+			{
+				if (j >= V && i> 0)
+					d[j] = MyMax(d[j], d[j - V] + W);
+			}
+			/*
 			for (int j = C; j >= 0; --j){
 				if (j >= V && i>0)    
 					d[j] = MyMax(d[j], d[j - V] + W);
 			}
+			*/
 		}
 		printf("%d\n", d[C]);
 		free(d);
@@ -102,4 +124,3 @@ int main(){
 	fclose(stdout);
 	return 0;
 }
-*/
