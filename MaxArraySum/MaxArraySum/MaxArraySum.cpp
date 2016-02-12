@@ -8,7 +8,7 @@
 
 const int N = 4;
 const int ROW = 4;
-const int COL = 5;
+const int COL = 4;
 
 #define MyMin(A,B) (((A)<(B))?(A):(B))
 #define MyMax(A,B) (((A)>(B))?(A):(B))
@@ -275,23 +275,74 @@ void findMaxSum(int M[][COL])
 	printf("Max sum is: %d\n", maxSum);
 }
 
+// see the MaxArraySub_Naive.ccd file for illustration
+int naiveMethod(int arr[][COL])
+{
+	int R = ROW, C = COL;
+	int sum = 0, maxSum = -1;
+	int RS = 0, RE = 0, CS = 0, CE = 0;
+	int rowEnd, rowStart, colEnd, colStart;
+
+	for (rowEnd = 0; rowEnd<R; rowEnd++)
+	{
+		for (rowStart = 0; rowStart <= rowEnd; rowStart++)
+		{
+			for (colEnd = 0; colEnd<C; colEnd++)
+			{
+				for (colStart = 0; colStart <= colEnd; colStart++)
+				{
+					sum = 0;
+					for (int i = rowStart; i <= rowEnd; i++)
+					{
+						for (int j = colStart; j <= colEnd; j++)
+						{
+							printf("adding a[%d][%d], ", i, j);
+							sum += arr[i][j];
+						}
+					}
+					printf("\n");
+					if (sum>maxSum)
+					{
+						maxSum = sum;
+						RS = rowStart;
+						RE = rowEnd;
+						CS = colStart;
+						CE = colEnd;
+					}
+					printf("--------------------- colStart = %d, colEnd = %d, rowStart = %d, rowEnd = %d\n", colStart, colEnd, rowStart, rowEnd);
+				}
+				printf("--------------------- colEnd = %d, rowStart = %d, rowEnd = %d\n", colEnd, rowStart, rowEnd);
+			}
+			printf("--------------------- rowStart = %d, rowEnd = %d\n", rowStart, rowEnd);
+		}
+		printf("--------------------- rowEnd = %d\n", rowEnd);
+	}
+	return maxSum;
+}
 int _tmain(int argc, _TCHAR* argv[])
 {
 	// let first row and col to always be 0, we start from [1][1]
-	int array[ROW][COL] = { { -1, -2, -10, -4, -20}, 
-							{  0,  3, -4, -3,  1 }, 
-							{ -3,  8, -3,  1,  -3 },
-							{ -4,  1,  1, -7, -6 },
-							}; 
-	int p[ROW][COL] = {};
+	// int array[ROW][COL] = { { -1, -2, -10, -4, -20}, 
+	// 						{  0,  3, -4, -3,  1 }, 
+	//						{ -3,  8, -3,  1,  -3 },
+	//						{ -4,  1,  1, -7, -6 },
+	//						}; 
+	int array[ROW][COL] = { { -1, -1, 3, 3 },
+							{ -1, -1, 3, 3 },
+							{ 10, -1, -1, -1 },
+							{ -1, -1, -1, -1 } };
+	// int p[ROW][COL] = {};
 	// int ret = MaxArraySum(array, p);
 	// MaxRecSum(array, p, 3);
 
 	
-	//int ret = intuitiveMethod(array);
-	//printf("max sum of subarray is %d\n", ret);
+	// int ret = intuitiveMethod(array);
+	// printf("max sum of subarray is %d\n", ret);
 
-	findMaxSum(array);
+	// findMaxSum(array);
+	int ret = naiveMethod(array);
+	printf("max sum of subarray is %d\n", ret);
+
 
 	return 0;
 }
