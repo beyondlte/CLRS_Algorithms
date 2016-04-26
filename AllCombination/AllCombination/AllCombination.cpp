@@ -28,6 +28,7 @@ int m = 1;
 // permutation without repeatition
 void Permu(char *s, int h, int t)
 {
+	printf("call permu(s, %d, %d)\n", h, t);
 	if (h==t)
 	{
 		printf("s = %s, try to swap %c & %c, but no need, just print it, s = ", s, s[h], s[t]);
@@ -65,6 +66,8 @@ void Permu(char *s, int h, int t)
 }
 
 // next_permutation using lexicographic ordering
+// first find x, from end to start, as long as s[i]<=s[i+1]
+// then find y, the last larger value than x on right of x
 //       x y  
 // 4 1 3 2 5 ->
 // 4 1 3 5 2
@@ -250,13 +253,14 @@ void combinationUtil(char arr[], char data[], int start, int end, int index, int
 	}
 }
 
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	char str[] = "abc"; // "abcd";
 	unsigned int n = strlen(str);
 
 	// permunation without repeatition: n!
-	// Permu(str, 0, n-1);
+	Permu(str, 0, n-1);
 
 	// permunation with/without repeatition
 	// with repeatition: n^n
