@@ -1,0 +1,25 @@
+server class: deals the comm issues (listening, accecpting conn)
+request handler class: deals with the 'protocol' issues(interpreting incoming data, processing, sending data back)
+
+
+the problem is: Server class is simplified, only the request handler class is used
+so server.shutdown() won't work, as we didn't re-implement server.shutdown()
+
+Here's the new solution, and it's the proper solution:
+1. We need to creat the server class (OpcServer)
+2. We also need a requesthandler class (OpcRequestHandler)
+3. In OpcServer.__init__(), we create a new member value (self._startServe)
+   we also call ThreadingTCPServer with OpcRequestHandler as the handler_class
+4. For each socket thread, we create a new OpcServer for it, and each server has a request handler
+5. OpcServer has serve_forever(), and requestHandler has a while loop (the reason we need a while loop is because
+  we need to continously serve the requests from client, otherwise, if requesthandler.request() returns/ends, the 
+  connect will be closed
+6. If we want to stop each thread, we can
+	1) stop the serve_forever() inside the OpcServer 
+		while self._startServe:
+ 			self.handle_request()
+		return
+	At the same time, in requestHandler, we stop the while loop there using self.server._startServe (as server's 
+attribute can be transferered to requestHandler)
+	2) or we don't need to have while loop in serve_forever()
+	we just need while loop inside the requestHandler
